@@ -1,8 +1,6 @@
-#include <avr/io.h>
-#include <stdint.h>
 #include "general.h"
 
-void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t mode)
+inline void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t mode)
 {
     if (mode == OUTPUT)
     {
@@ -14,7 +12,7 @@ void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t mode)
     }
 }
 
-void setPin(volatile uint8_t *port, uint8_t pin, uint8_t value)
+inline void setPin(volatile uint8_t *port, uint8_t pin, uint8_t value)
 {
     if (value == HIGH)
     {
@@ -26,12 +24,17 @@ void setPin(volatile uint8_t *port, uint8_t pin, uint8_t value)
     }
 }
 
-void togglePin(volatile uint8_t *port, uint8_t pin)
+inline void togglePin(volatile uint8_t *port, uint8_t pin)
 {
     *port ^= (1 << pin);
 }
 
-void delay(volatile uint16_t ms)
+inline void delay(volatile uint16_t ms)
 {
-    // Implement delay logic here
+    _delay_ms(ms);
+}
+
+inline void delayUs(volatile uint16_t us)
+{
+    _delay_us(us);
 }

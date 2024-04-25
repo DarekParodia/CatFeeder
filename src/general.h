@@ -1,8 +1,12 @@
 #ifndef GENERAL_H
 #define GENERAL_H
 
+#define __DELAY_BACKWARD_COMPATIBLE__
+#define F_CPU 16000000UL // 16 MHz
+
 #include <avr/io.h>
 #include <stdint.h>
+#include <util/delay.h>
 
 #define INPUT 0
 #define OUTPUT 1
