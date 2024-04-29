@@ -45,3 +45,13 @@ char *int2str(int value)
     snprintf(str, 12, "%d", value);
     return str;
 }
+
+void saveClock(struct ds3231_clock_t *clock)
+{
+    eeprom_write_block(clock, (void *)EEPROM_ADR_CLOCK, sizeof(struct ds3231_clock_t));
+}
+
+void loadClock(struct ds3231_clock_t *clock)
+{
+    eeprom_read_block(clock, (void *)EEPROM_ADR_CLOCK, sizeof(struct ds3231_clock_t));
+}
