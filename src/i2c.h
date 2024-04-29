@@ -16,6 +16,7 @@
 #include "general.h"
 
 void i2cInit(bool enablePullup);
+void i2cUninit();
 void i2cWait();
 int8_t i2cStart();
 int8_t i2cStop();

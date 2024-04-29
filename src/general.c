@@ -38,3 +38,10 @@ inline void delayUs(volatile uint16_t us)
 {
     _delay_us(us);
 }
+
+char *int2str(int value)
+{
+    static char str[12];
+    snprintf(str, 12, "%d", value);
+    return str;
+}

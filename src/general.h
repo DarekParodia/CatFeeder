@@ -17,5 +17,6 @@ void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t mode);
 void setPin(volatile uint8_t *port, uint8_t pin, uint8_t value);
 void togglePin(volatile uint8_t *port, uint8_t pin);
 void delay(volatile uint16_t ms);
+char *int2str(int value);
 
 #endif // GENERAL_H

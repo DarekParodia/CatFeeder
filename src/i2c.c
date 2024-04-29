@@ -12,6 +12,11 @@ void i2cInit(bool enablePullup)
     TWBR = ((F_CPU / I2C_F_SCL) - 16) / 2;
 }
 
+void i2cUninit()
+{
+    TWCR = 0;
+}
+
 void i2cWait()
 {
     while (!(TWCR & _BV(TWINT)))
@@ -64,6 +69,18 @@ int8_t i2cWrite(const uint8_t *data, size_t len)
         {
             return 1;
         }
+    }
+
+    return 0;
+}
+
+int8_t i2cRead(uint8_t *data, size_t len)
+{
+    for (size_t i = 0; i < len; i++)
+    {
+        TWCR = _BV(TWEN) | _BV(TWINT) | (i == len - 1 ? 0 : _BV(TWEA));
+        i2cWait();
+        data[i] = TWDR;
     }
 
     return 0;
