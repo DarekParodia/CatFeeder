@@ -5,15 +5,22 @@
 #include "general.h"
 #include "uart.h"
 #include "ds3231.h"
+#include "stepper.h"
 
-bool ledState = LOW;
 struct ds3231_clock_t clock = {0};
+struct stepper_t stepper = {0};
 
 void initialize()
 {
    uartInit(9600);
-   setPinMode(&DDRB, DDB5, OUTPUT);
    i2cInit(true);
+
+   // init stepper at pin 7 and enable at pin 6
+   setPinMode(&DDRD, DDD7, OUTPUT);
+   setPinMode(&DDRD, DDD6, OUTPUT);
+   initStepper(&stepper, &PORTD, PD7, &PORTD, PD6);
+
+   timers_init(); // for millis and micros
 
    uartSendStr("Initialized!\r\n");
 }
@@ -29,8 +36,7 @@ void loop()
    uartSendStr(int2str(clock.seconds));
    uartSendStr("\r\n");
 
-   setPin(&PORTB, PORTB5, ledState);
-   ledState = !ledState;
+   rotateByDegrees(&stepper, 360);
    delay(1000);
 }
 

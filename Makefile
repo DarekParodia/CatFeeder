@@ -4,7 +4,7 @@
 CC = avr-gcc
 
 # Compiler flags
-CFLAGS = -mmcu=atmega328p -Os -Iinclude
+CFLAGS = -mmcu=atmega328p -Os -Iinclude -DF_CPU=16000000UL
 
 # Directories
 SRC_DIR = src

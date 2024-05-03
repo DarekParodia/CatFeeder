@@ -59,6 +59,7 @@
   "files.associations": {
     "*.ejs": "html",
     "stdint.h": "c",
-    "cstdint": "cpp"
+    "cstdint": "cpp",
+    "stdio.h": "c"
   }
 }
