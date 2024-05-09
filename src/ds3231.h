@@ -60,5 +60,7 @@ struct ds3231_clock_t
 };
 
 int8_t ds3231_read_clock(struct ds3231_clock_t *clock);
+int8_t ds3231_write_clock(struct ds3231_clock_t *clock);
+uint32_t ds3231_clock_to_unixtime(struct ds3231_clock_t *clock);
 
 #endif // DS3231_H

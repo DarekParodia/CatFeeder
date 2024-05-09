@@ -24,16 +24,48 @@
 #define LOW 0
 
 // EEPROM addresses offsets
-#define EEPROM_ADR_CLOCK 0
+#define EEPROM_ADR_CLOCK 23
+#define EEPROM_ADR_LAST_FEED_INDEX EEPROM_ADR_CLOCK + sizeof(struct ds3231_clock_t)
 
-extern volatile unsigned long milis_counter;
-extern volatile unsigned long micros_counter;
-extern unsigned long last_reset_time_millis;
-extern unsigned long last_reset_time_micros;
+#define FEED_TIME_ROT_SPEED 0.075f
+#define FREE_FEED_ROT_SPEED 0.075f
+#define DEF_DIRERCTION 0
 
-void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t mode);
-void setPin(volatile uint8_t *port, uint8_t pin, uint8_t value);
-void togglePin(volatile uint8_t *port, uint8_t pin);
+struct feed_time_t // time at which the feeder will rotate
+{
+    uint8_t hours;
+    uint8_t minutes;
+    uint8_t seconds;
+    uint16_t rotation;
+    uint16_t rotation_reversed; // used to get the food back from the cat
+    float speed;
+    float back_speed;
+};
+typedef struct feed_time_t feed_time_t;
+
+struct free_feed_t // how much cat can get food on its own per day
+{
+    uint8_t max_delays;
+    uint16_t delay_in_seconds;
+    uint16_t max_rotation;
+    uint16_t rotation_reversed;
+    float speed;
+    float back_speed;
+};
+typedef struct free_feed_t free_feed_t;
+
+struct pin_t
+{
+    volatile uint8_t *ddr;
+    volatile uint8_t *port;
+    uint8_t pin;
+};
+typedef struct pin_t pin_t;
+
+void setPinMode(pin_t *pin, uint8_t mode);
+void setPin(pin_t *pin, uint8_t value);
+void togglePin(pin_t *pin);
+
 void delay(volatile uint16_t ms);
 void delayMicroseconds(volatile uint16_t us);
 char *int2str(int value);
@@ -41,6 +73,8 @@ char *long2str(long value);
 char *float2str(float value);
 void saveClock(struct ds3231_clock_t *clock);
 void loadClock(struct ds3231_clock_t *clock);
+void saveLastFeedIndex(uint8_t index);
+uint8_t loadLastFeedIndex();
 
 // Timer stuff
 void timers_init();

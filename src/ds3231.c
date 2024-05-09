@@ -25,3 +25,25 @@ int8_t ds3231_read_clock(struct ds3231_clock_t *clock)
 
     return 0;
 }
+
+uint32_t ds3231_clock_to_unixtime(struct ds3231_clock_t *clock)
+{
+    uint32_t unixtime = 0;
+
+    int daysSinceEpoch = (clock->year - 1970) * 365 + ((clock->year - 1969) / 4) - ((clock->year - 2000) / 100) + ((clock->year - 1900) / 400) - 719162;
+
+    // include leap years
+    if (clock->month > 2 && (clock->year % 4 == 0 && (clock->year % 100 != 0 || clock->year % 400 == 0)))
+    {
+        daysSinceEpoch++;
+    }
+
+    // include days of the month
+    daysSinceEpoch += (clock->month > 1 ? clock->month : 12) - 1;
+
+    daysSinceEpoch += clock->day - 1;
+
+    unixtime = daysSinceEpoch * 86400 + clock->hours * 3600 + clock->minutes * 60 + clock->seconds;
+
+    return unixtime;
+}

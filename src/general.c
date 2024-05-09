@@ -1,34 +1,33 @@
 #include "general.h"
 
-inline void setPinMode(volatile uint8_t *ddr, uint8_t pin, uint8_t mode)
+inline void setPinMode(pin_t *pin, uint8_t mode)
 {
     if (mode == OUTPUT)
     {
-        *ddr |= _BV(pin);
+        *pin->ddr |= _BV(pin->pin);
     }
     else
     {
-        *ddr &= ~_BV(pin);
+        *pin->ddr &= ~_BV(pin->pin);
     }
 }
 
-void setPin(volatile uint8_t *port, uint8_t pin, uint8_t value)
+inline void setPin(pin_t *pin, uint8_t value)
 {
     if (value == HIGH)
     {
-        *port |= _BV(pin);
+        *pin->port |= _BV(pin->pin);
     }
     else
     {
-        *port &= ~_BV(pin);
+        *pin->port &= ~_BV(pin->pin);
     }
 }
 
-void togglePin(volatile uint8_t *port, uint8_t pin)
+inline void togglePin(pin_t *pin)
 {
-    *port ^= _BV(pin);
+    *pin->port ^= _BV(pin->pin);
 }
-
 inline void delay(volatile uint16_t ms)
 {
     _delay_ms(ms);
@@ -53,14 +52,31 @@ char *long2str(long value)
     return str;
 }
 
+char *float2str(float value)
+{
+    static char str[12];
+    snprintf(str, 12, "%f", value);
+    return str;
+}
+
 void saveClock(struct ds3231_clock_t *clock)
 {
-    eeprom_write_block(clock, (void *)EEPROM_ADR_CLOCK, sizeof(struct ds3231_clock_t));
+    eeprom_update_block(clock, (void *)EEPROM_ADR_CLOCK, sizeof(struct ds3231_clock_t));
 }
 
 void loadClock(struct ds3231_clock_t *clock)
 {
     eeprom_read_block(clock, (void *)EEPROM_ADR_CLOCK, sizeof(struct ds3231_clock_t));
+}
+
+void saveLastFeedIndex(uint8_t index)
+{
+    eeprom_update_byte((uint8_t *)EEPROM_ADR_LAST_FEED_INDEX, index);
+}
+
+uint8_t loadLastFeedIndex()
+{
+    return eeprom_read_byte((uint8_t *)EEPROM_ADR_LAST_FEED_INDEX);
 }
 
 // Timer stuff

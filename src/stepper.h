@@ -10,16 +10,17 @@
 
 struct stepper_t
 {
-    volatile uint8_t *port;
-    uint8_t pin;
-    volatile uint8_t *en_port;
-    uint8_t en_pin;
+    pin_t *step_pin;
+    pin_t *dir_pin;
+    pin_t *en_pin;
 };
 typedef struct stepper_t stepper_t;
 
-void initStepper(stepper_t *stepper, volatile uint8_t *port, uint8_t pin, volatile uint8_t *en_port, uint8_t en_pin);
+void initStepper(stepper_t *stepper, pin_t *step_pin, pin_t *dir_pin, pin_t *en_pin);
 void step(stepper_t *stepper);
 void rotateByDegrees(stepper_t *stepper, float degrees);
-void setSpeed(int s);
+void setSpeed(float s);
+void stepperForward(stepper_t *stepper);
+void stepperBackward(stepper_t *stepper);
 
 #endif // STEPPER_H

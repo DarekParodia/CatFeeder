@@ -1,6 +1,6 @@
 #include "stepper.h"
 
-float speed = 1.1f; // revolutions per second
+float speed = 1.0f; // revolutions per second
 
 // some temporary shit
 long last_step_time;
@@ -8,16 +8,16 @@ float time_per_step = 0;
 int stepsToGo = 0;
 int stepsDone = 0;
 
-void initStepper(stepper_t *stepper, volatile uint8_t *port, uint8_t pin, volatile uint8_t *en_port, uint8_t en_pin)
+void initStepper(stepper_t *stepper, pin_t *step_pin, pin_t *dir_pin, pin_t *en_pin)
 {
     // setup struct
-    stepper->port = port;
-    stepper->pin = pin;
-    stepper->en_port = en_port;
+    stepper->step_pin = step_pin;
+    stepper->dir_pin = dir_pin;
     stepper->en_pin = en_pin;
 
     // setup pins
-    setPin(port, pin, HIGH);
+    setPin(step_pin, HIGH);
+    setPin(dir_pin, DEF_DIRERCTION);
     disableStepper(stepper);
 }
 
@@ -27,14 +27,14 @@ void step(stepper_t *stepper)
 
     if (now - last_step_time >= time_per_step) // if time between last step is lower then it should don't do anything
     {
-        setPin(stepper->port, stepper->pin, LOW);
+        setPin(stepper->step_pin, LOW);
         last_step_time = now;
         stepsDone++;
-        setPin(stepper->port, stepper->pin, HIGH);
+        setPin(stepper->step_pin, HIGH);
     }
 }
 
-void setSpeed(int s) // i don't think i would need this in the future but it's here anyway
+void setSpeed(float s) // i don't think i would need this in the future but it's here anyway; Edit: yueah i ussed id
 {
     speed = s;
 }
@@ -57,10 +57,18 @@ void rotateByDegrees(stepper_t *stepper, float degrees)
 
 void disableStepper(stepper_t *stepper)
 {
-    setPin(stepper->en_port, stepper->en_pin, HIGH);
+    setPin(stepper->en_pin, HIGH);
 }
 
 void enableStepper(stepper_t *stepper)
 {
-    setPin(stepper->en_port, stepper->en_pin, LOW);
+    setPin(stepper->en_pin, LOW);
+}
+void stepperForward(stepper_t *stepper)
+{
+    setPin(stepper->dir_pin, DEF_DIRERCTION);
+}
+void stepperBackward(stepper_t *stepper)
+{
+    setPin(stepper->dir_pin, !DEF_DIRERCTION);
 }
